@@ -40,4 +40,23 @@ public class PlayerHealth : MonoBehaviour
             gameManager.Derrota();
         }
     }
+
+    // La usa el cubito de vida. Regresa false si no se pudo curar (vida llena o muerto)
+    public bool Curar(float cantidad)
+    {
+        if (vida <= 0 || vida >= vidaMaxima)
+        {
+            return false;
+        }
+
+        vida += cantidad;
+        if (vida > vidaMaxima) vida = vidaMaxima;
+
+        if (ui != null)
+        {
+            ui.ActualizarVida(vida, vidaMaxima);
+        }
+
+        return true;
+    }
 }
