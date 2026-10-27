@@ -32,6 +32,9 @@ public class CamaraCRTL : MonoBehaviour
     // Update se llama en cada frame
     void Update()
     {
+        // Juego en pausa (pantalla final): dejar el cursor libre para el boton
+        if (Time.timeScale == 0f) return;
+
         // Si se presiona la tecla Escape, libera el cursor
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             SetCursorLocked(false);
@@ -46,6 +49,7 @@ public class CamaraCRTL : MonoBehaviour
     // LateUpdate se llama después de todos los Updates (ideal para cámaras)
     private void LateUpdate()
     {
+        if (Time.timeScale == 0f) return; // Juego en pausa: no mover la camara
         if (Cursor.lockState != CursorLockMode.Locked) return; // Si el cursor está libre, no procesa la rotación
 
 

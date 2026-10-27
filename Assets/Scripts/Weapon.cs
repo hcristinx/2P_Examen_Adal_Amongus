@@ -39,6 +39,7 @@ public class Weapon : MonoBehaviour
     private float _finRecarga;
     private bool _recargando = false;
     private float _tiempoSinBalas = 0f;
+    private UIManager ui;
 
     void Start()
     {
@@ -46,10 +47,18 @@ public class Weapon : MonoBehaviour
         _fire = _inputActionMap.FindAction("Attack");
         _reload = _inputActionMap.FindAction("Reload");
         _inputActionMap.Enable();
+
+        ui = FindFirstObjectByType<UIManager>();
     }
 
     void Update()
     {
+        // Juego en pausa (pantalla final): no disparar
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
+
         // Terminar la recarga cuando ya paso el tiempo
         if (_recargando && Time.time >= _finRecarga)
         {
@@ -67,6 +76,11 @@ public class Weapon : MonoBehaviour
         }
 
         RevisarReserva();
+
+        if (ui != null)
+        {
+            ui.ActualizarMunicion(municionActual, municionReserva, _recargando);
+        }
     }
 
     public void Disparar()
@@ -91,7 +105,9 @@ public class Weapon : MonoBehaviour
 
         // Rayo desde el centro de la camara hacia donde mira
         RaycastHit hit;
-        bool golpeo = Physics.Raycast(transform.position, transform.forward, out hit, alcance);
+        // QueryTriggerInteraction.Ignore: el rayo atraviesa triggers como las cajas de municion
+        bool golpeo = Physics.Raycast(transform.position, transform.forward, out hit, alcance,
+            Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
 
         CrearBala(golpeo, hit);
 
