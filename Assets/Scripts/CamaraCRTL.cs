@@ -12,7 +12,7 @@ public class CamaraCRTL : MonoBehaviour
     [Tooltip("Cuerpo que rota en horizontal (yaw). Si lo dejas vacío, rota este mismo objeto.")] // Ayuda visual al pasar el ratón en el Inspec
     [SerializeField] private Transform yawTarget; // Referencia al objeto que rotará lateralmente (ej. el jugador)
     [Header("Ajustes")] // Encabezado visual para los ajustes de la cámara
-    [SerializeField] private float sensitivity = 0.1f; // Sensibilidad del movimiento del ratón
+    [SerializeField] private float sensitivity = 0.3f; // Sensibilidad del movimiento del ratón
     [SerializeField] private float minPitch = -80f; // Límite inferior para la rotación vertical
     [SerializeField] private float maxPitch = 80f; // Límite superior para la rotación vertical
     private InputAction _look; // Acción de entrada para detectar el movimiento de mirada
