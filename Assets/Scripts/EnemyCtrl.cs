@@ -3,23 +3,35 @@ using UnityEngine.AI;
 
 public class EnemyCtrl : MonoBehaviour
 {
-    private NavMeshAgent _navMeshAgent;
-
     public Transform player;
     private NavMeshAgent navMeshAgent;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
-      
+        navMeshAgent = GetComponent<NavMeshAgent>();
+
+        // Los enemigos que crea el Spawner no tienen al jugador asignado,
+        // asi que lo buscan por su tag
+        if (player == null)
+        {
+            GameObject jugador = GameObject.FindGameObjectWithTag("Player");
+
+            if (jugador != null)
+            {
+                player = jugador.transform;
+            }
+            else
+            {
+                Debug.LogError("No se encontró al jugador. Revisa que tenga el tag Player.");
+            }
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-      navMeshAgent.SetDestination(player.position);  
+        if (player != null && navMeshAgent != null && navMeshAgent.isOnNavMesh)
+        {
+            navMeshAgent.SetDestination(player.position);
+        }
     }
 }
-
-
