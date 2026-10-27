@@ -7,15 +7,19 @@ public class EnemyCtrl : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     private PlayerHealth playerHealth;
 
+    [Header("Movimiento")]
+    public float velocidad = 2f;   // Antes 3.5 (valor por defecto del NavMeshAgent)
+
     [Header("Ataque")]
     public float distanciaAtaque = 1.8f;
     public float danio = 10f;
-    public float intervaloAtaque = 1f;   // Segundos entre cada ataque
+    public float intervaloAtaque = 2f;   // Segundos entre cada ataque
     private float _nextAttackTime;
 
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.speed = velocidad;
 
         // Los enemigos que crea el Spawner no tienen al jugador asignado,
         // asi que lo buscan por su tag

@@ -31,6 +31,47 @@ public class ConfigurarEscena
         {
             ArmarJuego();
         }
+
+        GameObject caja = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefab/CajaMunicion.prefab");
+        if (caja != null && caja.GetComponent<Rigidbody>() == null)
+        {
+            CajaConGravedad();
+        }
+    }
+
+    // Caja mas pequena que cae al suelo: un collider solido para chocar con el piso
+    // y un trigger un poco mas grande para que el jugador la recoja
+    [MenuItem("Herramientas/Caja de munición pequeña con gravedad")]
+    static void CajaConGravedad()
+    {
+        const string ruta = "Assets/Prefab/CajaMunicion.prefab";
+        GameObject contenido = PrefabUtility.LoadPrefabContents(ruta);
+
+        contenido.transform.localScale = Vector3.one * 0.2f;
+
+        // Capa "Ignore Raycast" para que no bloquee los disparos
+        contenido.layer = 2;
+
+        BoxCollider solido = contenido.GetComponent<BoxCollider>();
+        solido.isTrigger = false;
+
+        BoxCollider[] colliders = contenido.GetComponents<BoxCollider>();
+        if (colliders.Length < 2)
+        {
+            BoxCollider zona = contenido.AddComponent<BoxCollider>();
+            zona.isTrigger = true;
+            zona.size = Vector3.one * 3f;   // 3 veces la caja: facil de recoger
+        }
+
+        Rigidbody rb = contenido.GetComponent<Rigidbody>();
+        if (rb == null) rb = contenido.AddComponent<Rigidbody>();
+        rb.useGravity = true;
+        rb.mass = 0.5f;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+        PrefabUtility.SaveAsPrefabAsset(contenido, ruta);
+        PrefabUtility.UnloadPrefabContents(contenido);
+        Debug.Log("Caja de munición: más pequeña y con gravedad.");
     }
 
     [MenuItem("Herramientas/Armar juego (pistola, enemigos, oleadas y HUD)")]
