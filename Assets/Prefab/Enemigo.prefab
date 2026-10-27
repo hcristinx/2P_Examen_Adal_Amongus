@@ -237,6 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   player: {fileID: 0}
+  velocidad: 2
   distanciaAtaque: 1.8
   danio: 10
   intervaloAtaque: 1
