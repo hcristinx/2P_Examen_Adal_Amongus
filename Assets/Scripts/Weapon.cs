@@ -1,13 +1,9 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
+// Solo tiene la logica del arma. No sabe de donde viene la orden de disparar o recargar:
+// la llama EntradaArma (mouse/teclado) y despues la llamaran los controles de VR.
 public class Weapon : MonoBehaviour
 {
-    public InputActionAsset inputActionAsset;
-    private InputActionMap _inputActionMap;
-    private InputAction _fire;
-    private InputAction _reload;
-
     [Header("Disparo")]
     public float fireRate = 0.3f;      // Segundos entre cada disparo
     public float danio = 25f;          // Vida que le quita a un enemigo
@@ -41,13 +37,13 @@ public class Weapon : MonoBehaviour
     private float _tiempoSinBalas = 0f;
     private UIManager ui;
 
+    // Ultimos valores que se mostraron en el HUD
+    private int _ultimoCargador = -1;
+    private int _ultimaReserva = -1;
+    private bool _ultimoRecargando = false;
+
     void Start()
     {
-        _inputActionMap = inputActionAsset.FindActionMap("Player");
-        _fire = _inputActionMap.FindAction("Attack");
-        _reload = _inputActionMap.FindAction("Reload");
-        _inputActionMap.Enable();
-
         ui = FindFirstObjectByType<UIManager>();
     }
 
@@ -65,21 +61,17 @@ public class Weapon : MonoBehaviour
             TerminarRecarga();
         }
 
-        if (_fire.triggered)
-        {
-            Disparar();
-        }
-
-        if (_reload.triggered)
-        {
-            Recargar();
-        }
-
         RevisarReserva();
 
-        if (ui != null)
+        // Optimizacion: solo reescribir el texto del HUD cuando la municion cambia,
+        // no en cada cuadro
+        if (ui != null && (municionActual != _ultimoCargador || municionReserva != _ultimaReserva
+            || _recargando != _ultimoRecargando))
         {
             ui.ActualizarMunicion(municionActual, municionReserva, _recargando);
+            _ultimoCargador = municionActual;
+            _ultimaReserva = municionReserva;
+            _ultimoRecargando = _recargando;
         }
     }
 
