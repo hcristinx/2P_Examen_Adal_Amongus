@@ -152,3 +152,31 @@ Una entrada por sesión: qué se hizo, problema encontrado, cómo se resolvió, 
 **Pendientes**
 - Volver a probar con los lentes y medir con el Profiler.
 - HUD y pantalla final en World Space.
+
+---
+
+## 25/11/2026 — La espada propia como arma de VR (Hilda)
+
+**Qué se hizo**
+- La espada (`espada gomita.glb`, hecha en Nomad) se redujo con un script de Blender (`Fuentes/reducir_espada.py`): de 3.1 millones de triángulos a 3,065 triángulos y 4,571 vértices.
+- Los colores por vértice se hornearon a una textura propia de 1024×1024 con UVs nuevas.
+- Las piezas siguen separadas para poder animarlas: hoja, guarda, mango y pomo.
+- El original de 85 MB se movió a `Fuentes/`, fuera de `Assets`.
+- La espada se toma con el botón de agarre (XR Grab Interactable) desde un pedestal enfrente del jugador.
+- El gatillo llama a `Weapon.Disparar()` y vibra el control si salió el disparo; A o X llaman a `Weapon.Recargar()` (`EntradaArmaVR`).
+- El raycast y la bala salen de la punta de la espada (`origenRaycast` en `Weapon`).
+- Se guardó como `Espada.prefab`.
+
+**Problema encontrado**
+- La primera reducción tenía 4,195 triángulos pero 9,700 vértices en Unity: con sombreado plano cada cara tiene sus propios vértices, y cada costura de UV los duplica.
+
+**Cómo se resolvió**
+- Sombreado suave, menos islas de UV y menos triángulos en la hoja.
+
+**Decisión tomada**
+- La espada dispara un rayo desde la punta, para conservar la mecánica de disparo y munición del FPS.
+
+**Pendientes**
+- Probar en los lentes.
+- Mostrar la munición en la espada.
+- Animaciones de disparo y recarga.
