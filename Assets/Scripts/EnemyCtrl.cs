@@ -9,6 +9,8 @@ public class EnemyCtrl : MonoBehaviour
 
     [Header("Movimiento")]
     public float velocidad = 2f;   // Antes 3.5 (valor por defecto del NavMeshAgent)
+    public float intervaloRuta = 0.25f;   // Segundos entre cada calculo de ruta
+    private float _siguienteRuta;
 
     [Header("Ataque")]
     public float distanciaAtaque = 1.8f;
@@ -53,7 +55,12 @@ public class EnemyCtrl : MonoBehaviour
             return;
         }
 
-        navMeshAgent.SetDestination(player.position);
+        // Optimizacion: recalcular la ruta cada cierto tiempo y no en cada cuadro
+        if (Time.time >= _siguienteRuta)
+        {
+            navMeshAgent.SetDestination(player.position);
+            _siguienteRuta = Time.time + intervaloRuta;
+        }
 
         // Atacar si esta cerca, respetando el tiempo entre ataques
         float distancia = Vector3.Distance(transform.position, player.position);
