@@ -15,6 +15,10 @@ public class Weapon : MonoBehaviour
     public GameObject balaPrefab;      // Esfera que se ve salir de la pistola
     public Transform puntoDisparo;     // Boca de la pistola
 
+    [Header("Particulas")]
+    public ParticleSystem particulaDisparo;   // Destello en la punta al disparar
+    public GameObject particulaImpacto;       // Prefab que aparece donde pega el rayo
+
     [Header("Municion")]
     public int capacidadCargador = 10;
     public int municionActual = 10;
@@ -106,9 +110,20 @@ public class Weapon : MonoBehaviour
 
         CrearBala(golpeo, hit, origen);
 
+        if (particulaDisparo != null)
+        {
+            particulaDisparo.Play();
+        }
+
         if (golpeo)
         {
             Debug.Log("El disparo golpeó: " + hit.collider.name);
+
+            // Chispas donde pego el rayo, mirando hacia afuera de la superficie
+            if (particulaImpacto != null)
+            {
+                Instantiate(particulaImpacto, hit.point, Quaternion.LookRotation(hit.normal));
+            }
 
             // Buscar la vida del enemigo en el objeto golpeado o en sus padres
             EnemyHealth enemigo = hit.collider.GetComponentInParent<EnemyHealth>();
