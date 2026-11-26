@@ -4,6 +4,8 @@ public class Spawner : MonoBehaviour
 {
     [Header("Enemigos")]
     public GameObject enemyPrefab;
+    // Prefab Variants del enemigo (rapido, resistente...). Si hay, se elige una al azar
+    public GameObject[] variantesEnemigo;
 
     [Header("Puntos de aparición")]
     public Transform[] spawnPoints;
@@ -39,8 +41,15 @@ public class Spawner : MonoBehaviour
 
     void SpawnEnemy()
     {
+        // Elegir una variante de enemigo al azar (o el prefab base si no hay variantes)
+        GameObject prefab = enemyPrefab;
+        if (variantesEnemigo != null && variantesEnemigo.Length > 0)
+        {
+            prefab = variantesEnemigo[Random.Range(0, variantesEnemigo.Length)];
+        }
+
         // Comprobar que exista el prefab y haya puntos disponibles
-        if (enemyPrefab == null || spawnPoints.Length == 0)
+        if (prefab == null || spawnPoints.Length == 0)
         {
             Debug.LogError("Spawner sin prefab o sin puntos de aparición.");
             return;
@@ -50,7 +59,7 @@ public class Spawner : MonoBehaviour
         int randomIndex = Random.Range(0, spawnPoints.Length);
         Transform punto = spawnPoints[randomIndex];
 
-        Instantiate(enemyPrefab, punto.position, punto.rotation);
+        Instantiate(prefab, punto.position, punto.rotation);
 
         if (gameManager != null)
         {
