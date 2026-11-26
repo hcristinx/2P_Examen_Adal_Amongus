@@ -8,6 +8,8 @@ public class Weapon : MonoBehaviour
     public float fireRate = 0.3f;      // Segundos entre cada disparo
     public float danio = 25f;          // Vida que le quita a un enemigo
     public float alcance = 100f;       // Distancia maxima del Raycast
+    // De donde sale el Raycast. Vacio = este objeto (la camara en el FPS); en VR, la punta de la espada
+    public Transform origenRaycast;
 
     [Header("Bala visual")]
     public GameObject balaPrefab;      // Esfera que se ve salir de la pistola
@@ -95,13 +97,14 @@ public class Weapon : MonoBehaviour
         municionActual--;
         audioSource.PlayOneShot(sonidoDisparo);
 
-        // Rayo desde el centro de la camara hacia donde mira
+        // Rayo desde el origen (camara en el FPS o punta del arma en VR) hacia donde apunta
+        Transform origen = origenRaycast != null ? origenRaycast : transform;
         RaycastHit hit;
         // QueryTriggerInteraction.Ignore: el rayo atraviesa triggers como las cajas de municion
-        bool golpeo = Physics.Raycast(transform.position, transform.forward, out hit, alcance,
+        bool golpeo = Physics.Raycast(origen.position, origen.forward, out hit, alcance,
             Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
 
-        CrearBala(golpeo, hit);
+        CrearBala(golpeo, hit, origen);
 
         if (golpeo)
         {
@@ -117,7 +120,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    void CrearBala(bool golpeo, RaycastHit hit)
+    void CrearBala(bool golpeo, RaycastHit hit, Transform origen)
     {
         if (balaPrefab == null || puntoDisparo == null)
         {
@@ -125,7 +128,7 @@ public class Weapon : MonoBehaviour
         }
 
         // La bala apunta hacia donde pego el rayo (o hacia el frente si no pego en nada)
-        Vector3 destino = golpeo ? hit.point : transform.position + transform.forward * alcance;
+        Vector3 destino = golpeo ? hit.point : origen.position + origen.forward * alcance;
         Quaternion direccion = Quaternion.LookRotation(destino - puntoDisparo.position);
 
         GameObject bala = Instantiate(balaPrefab, puntoDisparo.position, direccion);
@@ -133,6 +136,12 @@ public class Weapon : MonoBehaviour
         // Que la bala no choque con el jugador al salir
         Collider colBala = bala.GetComponent<Collider>();
         foreach (Collider col in GetComponentsInParent<Collider>())
+        {
+            Physics.IgnoreCollision(colBala, col);
+        }
+
+        // Ni con el arma misma (la espada tiene colliders en sus piezas)
+        foreach (Collider col in GetComponentsInChildren<Collider>())
         {
             Physics.IgnoreCollision(colBala, col);
         }
