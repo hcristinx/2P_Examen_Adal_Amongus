@@ -180,3 +180,27 @@ Una entrada por sesión: qué se hizo, problema encontrado, cómo se resolvió, 
 - Probar en los lentes.
 - Mostrar la munición en la espada.
 - Animaciones de disparo y recarga.
+
+---
+
+## 26/11/2026 — Munición en la espada y partículas de disparo (Martha)
+
+**Qué se hizo**
+- Se agregó un letrero de munición pegado a la espada (TextMeshPro en World Space), porque en VR no se ve el HUD de la pantalla. Muestra "cargador / reserva", "Recargando..." al recargar y se pone rojo con el cargador vacío.
+- El letrero siempre mira hacia la cámara para que se pueda leer desde cualquier ángulo (`ContadorMunicionArma`).
+- Se agregó una partícula de destello en la punta de la espada que se lanza en cada disparo.
+- Se agregó una partícula de impacto (`ImpactoDisparo.prefab`) que aparece donde pega el rayo, orientada hacia afuera de la superficie, y se destruye sola al terminar.
+- `Weapon` tiene dos campos nuevos (`particulaDisparo` y `particulaImpacto`) y los usa en `Disparar()`.
+
+**Problema encontrado**
+- Un texto en World Space solo se lee de frente: si la espada se gira, el letrero queda de lado o al revés.
+
+**Cómo se resolvió**
+- En `LateUpdate` el letrero se orienta hacia la cámara en cada cuadro.
+
+**Decisión tomada**
+- El letrero solo se actualiza cuando cambia la munición, igual que se hizo con el HUD para no reescribir el texto en cada cuadro.
+
+**Pendientes**
+- Probar en los lentes que el letrero se lea bien y ajustar su tamaño si hace falta.
+- Zona de práctica con blancos.
