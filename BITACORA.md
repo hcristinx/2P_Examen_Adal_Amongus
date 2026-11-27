@@ -226,3 +226,31 @@ Una entrada por sesión: qué se hizo, problema encontrado, cómo se resolvió, 
 
 **Pendientes**
 - Probar en los lentes la distancia y la altura de los blancos.
+
+---
+
+## 27/11/2026 — Controles, UI en VR y tiempo de reacción (Jeanette)
+
+**Qué se hizo**
+- Al probar con los lentes no se podía caminar, teletransportarse ni agarrar la espada, los enemigos atrapaban al jugador casi de inmediato y no se veía la UI (tampoco el panel de derrota).
+- Se activaron en OpenXR los perfiles de controles Oculus Touch y Meta Quest Touch Plus, en PC y en Android.
+- El Canvas del HUD (vida, munición, oleada, eliminados y panel final) pasó de Screen Space a World Space: flota a 1.5 m enfrente del jugador y sigue su cabeza con suavidad (`SeguirCabeza.cs`).
+- El EventSystem usa XR UI Input Module y el HUD tiene Tracked Device Graphic Raycaster, para presionar el botón Reiniciar con el rayo del control.
+- Se apagó un Canvas extra que solo tenía un panel vacío.
+- `GameManager` espera 15 s (`tiempoPreparacion`) antes de la primera oleada, para tomar la espada y practicar.
+- El enemigo Rápido bajó de 3.5 a 2.5 m/s.
+
+**Problema encontrado**
+- El reporte de OpenXR en la consola decía "Features requested to be enabled: (0)": no había ningún perfil de controles activo, así que Unity no recibía ningún botón ni joystick. Se habían activado antes, pero el cambio no se guardó en el archivo de ajustes.
+- La UI en Screen Space no se dibuja en VR.
+
+**Cómo se resolvió**
+- Se activaron los perfiles y se guardó el archivo de ajustes de OpenXR, comprobando que quedaran con `m_enabled: 1`.
+- La UI se pasó a World Space con un script que la mantiene enfrente de la cabeza. Usa `Time.unscaledDeltaTime` para seguir moviéndose aunque el juego esté en pausa en la pantalla final.
+
+**Verificación**
+- Se probó con los lentes: la UI ya se ve.
+
+**Pendientes**
+- La mira "+" del FPS sigue en el HUD; en VR se apunta con la espada.
+- El botón Reiniciar todavía recarga la escena; el documento pide reiniciar sin cambiar de escena.
