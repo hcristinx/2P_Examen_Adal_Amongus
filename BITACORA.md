@@ -204,3 +204,25 @@ Una entrada por sesión: qué se hizo, problema encontrado, cómo se resolvió, 
 **Pendientes**
 - Probar en los lentes que el letrero se lea bien y ajustar su tamaño si hace falta.
 - Zona de práctica con blancos.
+
+---
+
+## 27/11/2026 — Zona de práctica de tiro (Jeanette)
+
+**Qué se hizo**
+- Se creó el Prefab `Blanco`: un poste con una diana amarilla. Al recibir un disparo, la diana se pone verde un segundo y suena (`Blanco.cs`).
+- `Weapon.Disparar()` ahora también avisa a los blancos: si el rayo pega en un objeto con `Blanco`, llama a `RecibirDisparo()`.
+- Se puso una fila de 3 blancos (`ZonaPractica`) a 5 m enfrente del jugador, en un lugar libre del mapa, mirando hacia él.
+- Cada blanco tiene un NavMeshObstacle con carving, para que los enemigos lo rodeen en lugar de atravesarlo.
+
+**Problema encontrado**
+- La diana es un cilindro aplanado, y el collider de cápsula que trae por defecto no tiene la forma de un disco: el rayo podía pasar por las orillas sin pegarle.
+
+**Cómo se resolvió**
+- Se cambió el collider de cápsula por un Mesh Collider con la forma exacta del disco.
+
+**Decisión tomada**
+- Los blancos no tienen vida ni desaparecen: sirven para practicar disparo y recarga cuantas veces se quiera antes del combate.
+
+**Pendientes**
+- Probar en los lentes la distancia y la altura de los blancos.
