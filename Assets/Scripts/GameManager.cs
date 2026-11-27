@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public int enemigosIniciales = 3;
     public int incrementoPorOleada = 2;
     public float tiempoEntreOleadas = 3f;
+    public float tiempoPreparacion = 15f;   // Segundos antes de la primera oleada
 
     [Header("Estado (solo lectura)")]
     public int oleadaActual = 0;
@@ -24,7 +25,8 @@ public class GameManager : MonoBehaviour
         spawner = FindFirstObjectByType<Spawner>();
         ui = FindFirstObjectByType<UIManager>();
 
-        IniciarOleada();
+        // Tiempo para tomar la espada y practicar antes de que lleguen los enemigos
+        Invoke(nameof(IniciarOleada), tiempoPreparacion);
     }
 
     public void IniciarOleada()
