@@ -132,6 +132,14 @@ public class Weapon : MonoBehaviour
             {
                 enemigo.RecibirDanio(danio);
             }
+
+            // Si es un blanco de la zona de practica, avisarle
+            Blanco blanco = hit.collider.GetComponentInParent<Blanco>();
+
+            if (blanco != null)
+            {
+                blanco.RecibirDisparo();
+            }
         }
     }
 
